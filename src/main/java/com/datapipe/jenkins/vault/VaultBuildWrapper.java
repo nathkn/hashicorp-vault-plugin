@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,10 @@ import javax.annotation.Nonnull;
 
 import hudson.tasks.BuildWrapperDescriptor;
 import com.bettercloud.vault.response.LogicalResponse;
+import com.bettercloud.vault.json.Json;
+import com.bettercloud.vault.json.JsonObject;
+import com.bettercloud.vault.json.JsonValue;
+
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -140,9 +145,40 @@ public class VaultBuildWrapper extends SimpleBuildWrapper {
         ArrayList<LogicalResponse> responses = new ArrayList<>();
         for (VaultSecret vaultSecret : vaultSecrets) {
             vaultAccessor.auth(credential);
-            LogicalResponse response = vaultAccessor.read(vaultSecret.getPath());
+
+            String path = vaultSecret.getPath();
+            if (vaultSecret.getVersion() != null) {
+                path = String.format("%s?version=%d",vaultSecret.getPath(), vaultSecret.getVersion());
+            }
+
+            LogicalResponse response = vaultAccessor.read(path);
             responses.add(response);
+
             Map<String, String> values = response.getData();
+
+            // If the data response has a .metadata and .data field and both are valid JSON objects,
+            // we can assume it is kv2 and should use the internal .data JSON field instead.
+            // This is a workaround until the bettercloud java driver gets updated for v2 secrets.
+            if (values.containsKey("metadata") && values.containsKey("data")) {
+                try {
+                    final JsonObject metadata = Json.parse(values.get("metadata")).asObject();
+                    final JsonObject data = Json.parse(values.get("data")).asObject();
+                    Map<String, String> newValues = new HashMap<String,String>();
+                    for (final JsonObject.Member member : data) {
+                        final JsonValue jsonValue = member.getValue();
+                        if (jsonValue == null || jsonValue.isNull()) {
+                            continue;
+                        } else if (jsonValue.isString()) {
+                            newValues.put(member.getName(), jsonValue.asString());
+                        } else {
+                            newValues.put(member.getName(), jsonValue.toString());
+                        }
+                    }
+                    values = newValues;
+                } catch (Exception e) {
+                }
+            }
+
             for (VaultSecretValue value : vaultSecret.getSecretValues()) {
                 valuesToMask.add(values.get(value.getVaultKey()));
                 context.env(value.getEnvVar(), values.get(value.getVaultKey()));

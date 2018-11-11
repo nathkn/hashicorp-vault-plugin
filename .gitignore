@@ -3,6 +3,7 @@
 target/
 work/
 .classpath
+.factorypath
 .project
 .settings/
 *.sublime*

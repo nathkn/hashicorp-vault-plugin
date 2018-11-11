@@ -32,22 +32,28 @@ import java.util.List;
 
 /**
  * Represents a Vault secret.
- * 
+ *
  * @author Peter Tierno {@literal <}ptierno{@literal @}datapipe.com{@literal >}
  */
 public class VaultSecret extends AbstractDescribableImpl<VaultSecret> {
 
   private String path;
+  private Integer version;
   private List<VaultSecretValue> secretValues;
 
   @DataBoundConstructor
-  public VaultSecret(String path, List<VaultSecretValue> secretValues) {
+  public VaultSecret(String path, Integer version, List<VaultSecretValue> secretValues) {
     this.path = path;
+    this.version = version;
     this.secretValues = secretValues;
   }
 
   public String getPath() {
     return this.path;
+  }
+
+  public Integer getVersion() {
+    return this.version;
   }
 
   public List<VaultSecretValue> getSecretValues() {

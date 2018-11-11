@@ -96,7 +96,7 @@ public class VaultConfigurationIT {
       VaultSecretValue secretValue = new VaultSecretValue("envVar1", "key1");
       List<VaultSecretValue> secretValues = new ArrayList<VaultSecretValue>();
       secretValues.add(secretValue);
-      secrets.add(new VaultSecret("secret/path1", secretValues));
+      secrets.add(new VaultSecret("secret/path1", null, secretValues));
       return secrets;
    }
 
