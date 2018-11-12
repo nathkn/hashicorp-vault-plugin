@@ -97,7 +97,6 @@ public class VaultBuildWrapper extends SimpleBuildWrapper {
         }
     }
 
-
     public List<VaultSecret> getVaultSecrets() {
         return this.vaultSecrets;
     }
@@ -127,7 +126,7 @@ public class VaultBuildWrapper extends SimpleBuildWrapper {
         return leaseIds;
     }
 
-    private List<LogicalResponse> provideEnvironmentVariablesFromVault(Context context, Run build) throws VaultException {
+    private List<LogicalResponse> provideEnvironmentVariablesFromVault(Context context, Run<?, ?> build) throws VaultException {
         String url = getConfiguration().getVaultUrl();
 
         if (StringUtils.isBlank(url)) {
@@ -151,7 +150,7 @@ public class VaultBuildWrapper extends SimpleBuildWrapper {
         return responses;
     }
 
-    private VaultCredential retrieveVaultCredentials(Run build) {
+    private VaultCredential retrieveVaultCredentials(Run<?, ?> build) {
         String id = getConfiguration().getVaultCredentialId();
         if (StringUtils.isBlank(id)) {
             throw new VaultPluginException("The credential id was not configured - please specify the credentials to use.");
