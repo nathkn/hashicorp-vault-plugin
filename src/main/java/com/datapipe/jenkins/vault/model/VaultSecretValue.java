@@ -23,6 +23,7 @@
  */
 package com.datapipe.jenkins.vault.model;
 
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;
@@ -52,6 +53,7 @@ public class VaultSecretValue
     return this.vaultKey;
   }
 
+  @Symbol("vaultSecretValue")
   @Extension
   public static final class DescriptorImpl
       extends Descriptor<VaultSecretValue> {

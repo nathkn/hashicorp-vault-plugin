@@ -7,3 +7,5 @@ work/
 .settings/
 *.sublime*
 tmp/
+.vscode
+.factorypath

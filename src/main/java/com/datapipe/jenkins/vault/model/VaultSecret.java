@@ -26,13 +26,15 @@ package com.datapipe.jenkins.vault.model;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.List;
 
 /**
  * Represents a Vault secret.
- * 
+ *
  * @author Peter Tierno {@literal <}ptierno{@literal @}datapipe.com{@literal >}
  */
 public class VaultSecret extends AbstractDescribableImpl<VaultSecret> {
@@ -54,6 +56,7 @@ public class VaultSecret extends AbstractDescribableImpl<VaultSecret> {
     return this.secretValues;
   }
 
+  @Symbol("vaultSecret")
   @Extension
   public static final class DescriptorImpl extends Descriptor<VaultSecret> {
 

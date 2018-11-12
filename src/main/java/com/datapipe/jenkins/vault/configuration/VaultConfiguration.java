@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -73,6 +74,7 @@ public class VaultConfiguration extends AbstractDescribableImpl<VaultConfigurati
         this.vaultCredentialId = vaultCredentialId;
     }
 
+    @Symbol("configuration")
     @Extension
     public static class DescriptorImpl extends Descriptor<VaultConfiguration> {
         @Override
